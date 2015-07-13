@@ -49,7 +49,9 @@ function buildResults(json) {
         var obj = json[k];
         if (obj.aliasOf) {
             if (obj.aliasOf.toLowerCase() !== obj.id.toLowerCase()) {
-                html += "<dt>[<a href=\"#\">" + (obj.id || k) + "</a>]" + labels(obj) + "</dt><dd><div>Alias of [<a href=\"#" + obj.aliasOf.toLowerCase() + "\">" + obj.aliasOf + "</a>].</div>" + prettifyApiOutput(obj) + "</dd>";
+                var alias = obj;
+                while (alias.aliasOf) { alias = json[alias.aliasOf]; };
+                html += "<dt>[<a href=\"#\">" + (obj.id || k) + "</a>]" + labels(obj) + labels(alias) + "</dt><dd><div>Alias of [<a href=\"#" + obj.aliasOf.toLowerCase() + "\">" + obj.aliasOf + "</a>].</div>" + prettifyApiOutput(obj) + "</dd>";
                 count++;
             }
         } else {
