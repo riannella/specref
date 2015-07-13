@@ -49,12 +49,12 @@ function buildResults(json) {
         var obj = json[k];
         if (obj.aliasOf) {
             if (obj.aliasOf.toLowerCase() !== obj.id.toLowerCase()) {
-                html += "<dt>[<a href=\"#\">" + (obj.id || k) + "</a>]" + labels(obj) + "</dt><dd><div>Alias of [<a href=\"#" + obj.aliasOf + "\">" + obj.aliasOf + "</a>].</div>" + prettifyApiOutput(obj) + "</dd>";
+                html += "<dt>[<a href=\"#\">" + (obj.id || k) + "</a>]" + labels(obj) + "</dt><dd><div>Alias of [<a href=\"#" + obj.aliasOf.toLowerCase() + "\">" + obj.aliasOf + "</a>].</div>" + prettifyApiOutput(obj) + "</dd>";
                 count++;
             }
         } else {
             count++;
-            html += "<dt id=\"" + (obj.id || k) + "\">[<a href=\"#\">" + (obj.id || k) + "</a>]" + labels(obj) + "</dt><dd>" + stringifyRef(obj) + prettifyApiOutput(obj) + "</dd>";
+            html += "<dt id=\"" + (obj.id || k).toLowerCase() + "\">[<a href=\"#\">" + (obj.id || k) + "</a>]" + labels(obj) + "</dt><dd>" + stringifyRef(obj) + prettifyApiOutput(obj) + "</dd>";
         }
     }
     return { html: html, count: count };
