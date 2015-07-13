@@ -47,17 +47,25 @@ function buildResults(json) {
     var html = "", count = 0;
     for (var k in json) {
         var obj = json[k];
-        if (!obj.aliasOf) {
+        if (obj.aliasOf) {
+            if (obj.aliasOf.toLowerCase() !== obj.id.toLowerCase()) {
+                html += "<dt>[<a href=\"#\">" + (obj.id || k) + "</a>]" + labels(obj) + "</dt><dd><div>Alias of [<a href=\"#" + obj.aliasOf + "\">" + obj.aliasOf + "</a>].</div>" + prettifyApiOutput(obj) + "</dd>";
+                count++;
+            }
+        } else {
             count++;
-            html += "<dt>[<a href=\"#\">" + (obj.id || k) + "</a>]" + warnings(obj) + "</dt><dd>" + stringifyRef(obj) + prettifyApiOutput(obj) + "</dd>";
+            html += "<dt id=\"" + (obj.id || k) + "\">[<a href=\"#\">" + (obj.id || k) + "</a>]" + labels(obj) + "</dt><dd>" + stringifyRef(obj) + prettifyApiOutput(obj) + "</dd>";
         }
     }
     return { html: html, count: count };
 }
 
-function warnings(obj) {
+function labels(obj) {
     if (obj.obsoletedBy) {
         return " <span class=\"label label-warning\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"Obsoleted by " + obj.obsoletedBy.map(function(k) { return "[" + k + "]"; }).join(", ") + ".\">Obsolete</span>";
+    }
+    if (obj.aliasOf) {
+        return " <span class=\"label label-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"Alias of [" + obj.aliasOf + "].\">Alias</span>";
     }
     return "";
 }
@@ -129,7 +137,7 @@ function setup($root) {
     
     function queryFromLocation() {
         var obj = {};
-        (window.location.href.split('?')[1] || '').split('&').forEach(function(str) {
+        (window.location.href.split('?')[1] || '').split("#")[0].split('&').forEach(function(str) {
             str = (str || "").split('=');
             obj[str[0]] = str[1];
         });
